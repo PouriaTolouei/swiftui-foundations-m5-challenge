@@ -11,7 +11,7 @@ import SwiftUI
 struct Challenge_17App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LessonListView()
         }
     }
 }
