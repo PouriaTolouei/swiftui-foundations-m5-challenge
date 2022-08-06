@@ -8,13 +8,41 @@
 import SwiftUI
 
 struct LessonListView: View {
+    
+    @EnvironmentObject var model: LessonModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        
+        NavigationView {
+            
+            VStack {
+                
+                List {
+                    
+                    ForEach(model.lessons) { lesson in
+                        
+                        NavigationLink(tag: lesson.id, selection: $model.selectedLessonIndex) {
+                            
+                            LessonView()
+                            
+                        } label: {
+                            
+                            Text(lesson.title)
+                            
+                        }
+
+                        
+                    }
+                }
+                .navigationTitle("All Vidoes")
+            }
+        }
     }
 }
 
 struct LessonListView_Previews: PreviewProvider {
     static var previews: some View {
         LessonListView()
+            .environmentObject(LessonModel())
     }
 }

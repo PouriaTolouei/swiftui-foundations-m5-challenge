@@ -8,9 +8,10 @@
 import Foundation
 import SwiftUI
 
-class LessonModel {
+class LessonModel: ObservableObject {
     
-    var lessons = [Lesson]()
+    @Published var lessons = [Lesson]()
+    @Published var selectedLessonIndex: Int?
     
     init() {
         getRemoteData()
@@ -25,20 +26,20 @@ class LessonModel {
             
             URLSession.shared.dataTask(with: url) { data, urlResponse, error in
                 
-                if error == nil {
+                if error != nil {
                     return
                 }
                 
                 let decoder = JSONDecoder()
                 
                 do {
-                    self.lessons = try decoder.decode([Lesson].self, from: data!)
+                    self.lessons += try decoder.decode([Lesson].self, from: data!)
                 }
                 catch {
                     print(error)
                 }
                 
-            }
+            }.resume()
         }
         
     }

@@ -12,6 +12,7 @@ struct Challenge_17App: App {
     var body: some Scene {
         WindowGroup {
             LessonListView()
+                .environmentObject(LessonModel())
         }
     }
 }
