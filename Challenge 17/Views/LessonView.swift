@@ -6,15 +6,81 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct LessonView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    
+    @EnvironmentObject var model: LessonModel
+    
+    // Shows "next" or "finished" depending on the current lesson
+    var buttonText: String {
+        
+        // Not the last lesson
+        if model.currentLesson?.id ?? 0 < model.lessons.count {
+            return "Next"
+        }
+        // Last lesson
+        else {
+            return "Finish"
+        }
     }
-}
-
-struct LessonView_Previews: PreviewProvider {
-    static var previews: some View {
-        LessonView()
+    
+    var body: some View {
+        
+        // Makes sure the current lesson is set
+        if model.currentLesson != nil {
+           
+            // Makes sure URL object can be created
+            if let videoUrl = URL(string: model.currentLesson!.url) {
+                
+                GeometryReader { geo in
+                    
+                    VStack(spacing: 100) {
+                        
+                        // Title and video player
+                        VStack(alignment: .leading, spacing: 80) {
+                            
+                            Text(model.currentLesson!.title)
+                                .bold()
+                                .font(.title)
+                                .frame(height: geo.size.height / 5)
+                
+                            VideoPlayer(player: AVPlayer(url: videoUrl))
+                                .frame(height: (geo.size.width - 20) / (16/9))
+                        }
+                        
+                        // Navigation button
+                        ZStack {
+                        
+                            Rectangle()
+                                .frame(width: geo.size.width / 3, height: geo.size.height / 15)
+                                .foregroundColor(.black)
+                                .cornerRadius(15)
+                            
+                            Button {
+                                if buttonText == "Next" {
+                                    model.lessonIndex += 1
+                                    model.currentLesson = model.lessons[model.lessonIndex]
+                                }
+                                else {
+                                    model.selectedLessonId = nil
+                                }
+                            } label: {
+                                Text(buttonText)
+                                    .foregroundColor(.white)
+                            }
+                        }
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
+                    .padding(.all, 10)
+                }
+            }
+           
+        }
+        // In case current lesson isn't set properly
+        else {
+            
+            ProgressView()
+        }
     }
 }

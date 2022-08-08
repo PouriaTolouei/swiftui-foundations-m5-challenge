@@ -14,29 +14,35 @@ struct LessonListView: View {
     var body: some View {
         
         NavigationView {
-            
-            VStack {
+     
+            List {
                 
-                List {
+                ForEach(model.lessons) { lesson in
                     
-                    ForEach(model.lessons) { lesson in
+                    NavigationLink(tag: lesson.id, selection: $model.selectedLessonId) {
                         
-                        NavigationLink(tag: lesson.id, selection: $model.selectedLessonIndex) {
-                            
-                            LessonView()
-                            
-                        } label: {
-                            
-                            Text(lesson.title)
-                            
-                        }
-
+                        LessonView()
+                            .onAppear {
+                                model.beginLesson(lesson.id - 1)
+                            }
+                        
+                    } label: {
+                        
+                        // Lesson list row
+                        Text(lesson.title)
+                            .padding(.vertical)
                         
                     }
                 }
-                .navigationTitle("All Vidoes")
+            }
+            .navigationTitle("All Videos")
+            .onChange(of: model.selectedLessonId) { newValue in
+                
+                // Makes sure current lesson is reset when lesson is changed or exited
+                model.currentLesson = nil
             }
         }
+        .navigationViewStyle(.stack)
     }
 }
 
