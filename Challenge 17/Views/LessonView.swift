@@ -27,60 +27,61 @@ struct LessonView: View {
     
     var body: some View {
         
-        // Makes sure the current lesson is set
-        if model.currentLesson != nil {
-           
-            // Makes sure URL object can be created
-            if let videoUrl = URL(string: model.currentLesson!.url) {
-                
-                GeometryReader { geo in
+        GeometryReader { geo in
+            
+            // Makes sure the current lesson is set
+            if model.currentLesson != nil {
+            
+                VStack(spacing: 100) {
                     
-                    VStack(spacing: 100) {
+                    // Title and video player
+                    VStack(alignment: .leading, spacing: 80) {
                         
-                        // Title and video player
-                        VStack(alignment: .leading, spacing: 80) {
+                        Text(model.currentLesson!.title)
+                            .bold()
+                            .font(.title)
+                            .frame(height: geo.size.height / 5)
+                        
+                        // Makes sure URL object can be created
+                        if let videoUrl = URL(string: model.currentLesson!.url) {
                             
-                            Text(model.currentLesson!.title)
-                                .bold()
-                                .font(.title)
-                                .frame(height: geo.size.height / 5)
-                
                             VideoPlayer(player: AVPlayer(url: videoUrl))
                                 .frame(height: (geo.size.width - 20) / (16/9))
                         }
+                    }
+                    
+                    // Navigation button
+                    ZStack {
+                    
+                        Rectangle()
+                            .frame(width: geo.size.width / 3, height: geo.size.height / 15)
+                            .foregroundColor(.black)
+                            .cornerRadius(15)
                         
-                        // Navigation button
-                        ZStack {
-                        
-                            Rectangle()
-                                .frame(width: geo.size.width / 3, height: geo.size.height / 15)
-                                .foregroundColor(.black)
-                                .cornerRadius(15)
-                            
-                            Button {
-                                if buttonText == "Next" {
-                                    model.lessonIndex += 1
-                                    model.currentLesson = model.lessons[model.lessonIndex]
-                                }
-                                else {
-                                    model.selectedLessonId = nil
-                                }
-                            } label: {
-                                Text(buttonText)
-                                    .foregroundColor(.white)
+                        Button {
+                            if buttonText == "Next" {
+                                model.lessonIndex += 1
+                                model.currentLesson = model.lessons[model.lessonIndex]
                             }
+                            else {
+                                model.selectedLessonId = nil
+                            }
+                        } label: {
+                            Text(buttonText)
+                                .foregroundColor(.white)
                         }
                     }
-                    .navigationBarTitleDisplayMode(.inline)
-                    .padding(.all, 10)
                 }
+                
+                .padding(.all, 10)
             }
-           
         }
-        // In case current lesson isn't set properly
-        else {
-            
-            ProgressView()
-        }
+        .navigationBarTitleDisplayMode(.inline)
+
+//        // In case current lesson isn't set properly
+//        else {
+//
+//            ProgressView()
+//        }
     }
 }

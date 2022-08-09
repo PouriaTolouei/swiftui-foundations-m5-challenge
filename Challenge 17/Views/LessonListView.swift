@@ -6,10 +6,24 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct LessonListView: View {
     
     @EnvironmentObject var model: LessonModel
+    
+    @State var searchText = ""
+    
+    var searchResults: [Lesson] {
+        if searchText.isEmpty {
+            return model.lessons
+        }
+        else {
+            return model.lessons.filter { lesson in
+                lesson.title.contains(searchText)
+            }
+        }
+    }
     
     var body: some View {
         
@@ -17,7 +31,7 @@ struct LessonListView: View {
      
             List {
                 
-                ForEach(model.lessons) { lesson in
+                ForEach(searchResults) { lesson in
                     
                     NavigationLink(tag: lesson.id, selection: $model.selectedLessonId) {
                         
@@ -36,6 +50,7 @@ struct LessonListView: View {
                 }
             }
             .navigationTitle("All Videos")
+            .searchable(text: $searchText)
             .onChange(of: model.selectedLessonId) { newValue in
                 
                 // Makes sure current lesson is reset when lesson is changed or exited
