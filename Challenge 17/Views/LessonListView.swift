@@ -12,7 +12,7 @@ struct LessonListView: View {
     
     @EnvironmentObject var model: LessonModel
     
-    @State var searchText = ""
+    @State private var searchText = ""
     
     var searchResults: [Lesson] {
         if searchText.isEmpty {
@@ -20,7 +20,7 @@ struct LessonListView: View {
         }
         else {
             return model.lessons.filter { lesson in
-                lesson.title.contains(searchText)
+                lesson.title.localizedCaseInsensitiveContains(searchText)
             }
         }
     }
